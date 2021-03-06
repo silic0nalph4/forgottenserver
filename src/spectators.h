@@ -26,9 +26,6 @@ class Creature;
 
 class SpectatorVec
 {
-	using Vec = std::vector<Creature*>;
-	using Iterator = Vec::iterator;
-	using ConstIterator = Vec::const_iterator;
 public:
 	SpectatorVec() {
 		vec.reserve(32);
@@ -53,16 +50,16 @@ public:
 		vec.pop_back();
 	}
 
-	size_t size() const { return vec.size(); }
-	bool empty() const { return vec.empty(); }
-	Iterator begin() { return vec.begin(); }
-	ConstIterator begin() const { return vec.begin(); }
-	Iterator end() { return vec.end(); }
-	ConstIterator end() const { return vec.end(); }
-	void emplace_back(Creature* c) { vec.emplace_back(c); }
+	decltype(auto) size() const { return vec.size(); }
+	decltype(auto) empty() const { return vec.empty(); }
+	decltype(auto) begin() { return vec.begin(); }
+	decltype(auto) begin() const { return vec.begin(); }
+	decltype(auto) end() { return vec.end(); }
+	decltype(auto) end() const { return vec.end(); }
+	decltype(auto) emplace_back(Creature* c) { return vec.emplace_back(c); }
 
 private:
-	Vec vec;
+	std::vector<Creature*> vec;
 };
 
 #endif
