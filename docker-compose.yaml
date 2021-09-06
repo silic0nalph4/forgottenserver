@@ -1,0 +1,60 @@
+version: "3.0"
+
+services:
+  server:
+    build:
+      context: .
+    restart: always
+    ports:
+      - "7171:7171"
+      - "7172:7172"
+    depends_on:
+      - db
+    networks:
+      - db-network
+    volumes:
+      - tfs:/srv
+
+  db:
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: aibit
+      MYSQL_USER: forgottenserver
+      MYSQL_PASSWORD: aibit
+      # Automatically creates a database
+      MYSQL_DATABASE: forgottenserver
+    volumes:
+      # Saves all the data in ./db directory
+      - ./db:/var/lib/mysql
+      # Automatically executes schema.sql on startup
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - db-network
+
+  db-adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - db-network
+
+  web:
+    image: myacc
+    restart: always
+    ports:
+      - 80:80
+    networks:
+      - db-network
+    depends_on:
+      - db
+    volumes:
+      - tfs:/opt/tfs
+
+networks:
+  db-network:
+
+volumes:
+  tfs: 
+
