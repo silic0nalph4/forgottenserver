@@ -41,7 +41,7 @@ services:
       - db-network
 
   web:
-    image: myacc
+    image: myaac
     restart: always
     ports:
       - 80:80
