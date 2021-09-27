@@ -555,7 +555,12 @@ void Items::parseItemNode(const pugi::xml_node& itemNode, uint16_t id)
 
 	it.name = itemNode.attribute("name").as_string();
 
-	nameToItems.insert({ asLowerCaseString(it.name), id });
+	if (!it.name.empty()) {
+		std::string lowerCaseName = asLowerCaseString(it.name);
+		if (nameToItems.find(lowerCaseName) == nameToItems.end()) {
+			nameToItems.emplace(std::move(lowerCaseName), id);
+		}
+	}
 
 	pugi::xml_attribute articleAttribute = itemNode.attribute("article");
 	if (articleAttribute) {
@@ -1240,8 +1245,8 @@ void Items::parseItemNode(const pugi::xml_node& itemNode, uint16_t id)
 						// initDamage = -1 (undefined, override initDamage with damage)
 						if (initDamage > 0 || initDamage < -1) {
 							conditionDamage->setInitDamage(-initDamage);
-						} else if (initDamage == -1 && damage != 0) {
-							conditionDamage->setInitDamage(damage);
+						} else if (initDamage == -1 && start != 0) {
+							conditionDamage->setInitDamage(start);
 						}
 
 						conditionDamage->setParam(CONDITION_PARAM_FIELD, 1);
@@ -1408,8 +1413,11 @@ const ItemType& Items::getItemIdByClientId(uint16_t spriteId) const
 
 uint16_t Items::getItemIdByName(const std::string& name)
 {
-	auto result = nameToItems.find(asLowerCaseString(name));
+	if (name.empty()) {
+		return 0;
+	}
 
+	auto result = nameToItems.find(asLowerCaseString(name));
 	if (result == nameToItems.end())
 		return 0;
 
