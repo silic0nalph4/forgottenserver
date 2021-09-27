@@ -35,8 +35,7 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/test
   pugixml
 
 COPY --from=build /usr/src/forgottenserver/build/tfs /bin/tfs
-COPY data /srv/data/
-COPY LICENSE README.md *.dist *.sql key.pem /srv/
+COPY LICENSE README.md *.sql key.pem /srv/
 
 EXPOSE 7171 7172
 WORKDIR /srv
